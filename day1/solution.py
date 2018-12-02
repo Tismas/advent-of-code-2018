@@ -1,4 +1,4 @@
-with open('./input1.txt') as f:
+with open('./input.txt') as f:
     inputs = [*map(int, f.readlines())]
     sumsHistory = []
     nextSum = 0
