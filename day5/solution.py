@@ -20,10 +20,8 @@ with open('./input.txt') as f:
 
     print('reduced polymer length', len(polymer))
 
-    unit_types = set()
+    unit_types = set(polymer)
     shortest = len(polymer)
-    for unit in polymer:
-        unit_types.add(unit.lower())
 
     for unit_type in unit_types:
         new_polymer = list(polymer)
@@ -36,6 +34,6 @@ with open('./input.txt') as f:
         while destroyed_something:
             new_polymer, destroyed_something = reduce_polymer(new_polymer)
         if len(new_polymer) < shortest:
-          shortest = len(new_polymer)
+            shortest = len(new_polymer)
 
     print('shortest polymer after removing one unit type', shortest)
