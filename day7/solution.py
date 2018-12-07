@@ -16,10 +16,6 @@ class Node:
     def __lt__(self, other):
         return self.name < other.name
 
-def log(nodes):
-    for node in nodes:
-        print('Node', node.name, ':', node.nodes_before)
-
 with open('./input.txt') as f:
     answer = ''
     nodes = []
