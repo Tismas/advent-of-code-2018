@@ -1,7 +1,7 @@
 class Node:
-    def __init__(self, numbers, offset = 0):
-        self.child_q = numbers.pop(offset)
-        self.metadata_q = numbers.pop(offset)
+    def __init__(self, numbers):
+        self.child_q = numbers.pop(0)
+        self.metadata_q = numbers.pop(0)
         self.metadata = []
         self.children = []
 
@@ -10,7 +10,7 @@ class Node:
                 self.metadata.append(numbers.pop(0))
         else:
             for _ in range(self.child_q):
-                self.children.append(Node(numbers, offset))
+                self.children.append(Node(numbers))
 
             for _ in range(self.metadata_q):
                 self.metadata.append(numbers.pop(0))
