@@ -13,7 +13,6 @@ mx = 0
 my = 0
 msize = 0
 for sq_size in range(1, 301):
-  print sq_size
   for y in range(size-sq_size):
     for x in range(size-sq_size):
       s = 0
