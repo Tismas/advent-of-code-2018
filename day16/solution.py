@@ -35,7 +35,7 @@ def make_operation(registers, opcode, a, b, c):
         registers[c] = 1 if registers[a] == b else 0
     elif opcode == 'eqrr':
         registers[c] = 1 if registers[a] == registers[b] else 0
-    
+
 
 with open('./input.txt') as f:
     line = f.readline()
@@ -62,7 +62,7 @@ with open('./input.txt') as f:
             operations[opcode] = operation
 
     print('Part 1: ', like_3_or_more)
-    
+
     test_inputs = [x.strip() for x in f.readlines() if x.strip()]
     registers = [0, 0, 0, 0]
     for test in test_inputs:
