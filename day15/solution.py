@@ -57,7 +57,9 @@ def bfs(m, entity, entities):
                     queue.append((my + dy, mx + dx, steps + [(my+dy, mx+dx)]))
                     checked.add((my + dy, mx + dx))
     if solutions:
-        return min(solutions, key=lambda solution: len(solution))[0]
+        min_steps = min([len(solution) for solution in solutions])
+        shortest_solutions = [solution for solution in solutions if len(solution) == min_steps]
+        return sorted(shortest_solutions, key=lambda solution: (solution[-2][0], solution[-2][1]))[0][0]
     return (0, 0)
 
 
