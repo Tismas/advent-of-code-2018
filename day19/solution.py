@@ -33,12 +33,19 @@ def make_operation(registers, opcode, a, b, c):
     elif opcode == 'eqrr':
         registers[c] = 1 if registers[a] == registers[b] else 0
 
+part2_key = 10551277
+
 with open('./input.txt') as f:
-  registers = [0] * 6
+  registers = [0,0,0,0,0,0]
   pointer_register = int(f.readline().split('#ip ')[-1])
   operations = [line.split() for line in f.readlines()]
   while registers[pointer_register] >= 0 and registers[pointer_register] < len(operations):
     op, a, b, c = operations[registers[pointer_register]]
     make_operation(registers, op, int(a), int(b), int(c))
     registers[pointer_register] += 1
-  print registers
+print('part1', registers[0])
+part_2 = 0
+for i in range(1, part2_key + 1):
+    if part2_key % i == 0:
+        part_2 += i
+print('part2', part_2)
