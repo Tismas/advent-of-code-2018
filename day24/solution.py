@@ -1,3 +1,4 @@
+from copy import deepcopy 
 import re
 
 class Group:
@@ -36,7 +37,7 @@ class Group:
         target.effective_power -= killed_units * target.damage
 
     def __repr__(self):
-        return f'Group {self.id}: {self.units} units with {self.hp} hp and {self.damage} damage\n'
+        return f'Group {self.id}: {self.units} units with {self.hp} hp and {self.damage} damage'
 
 def load_input(f):
     global line
@@ -83,33 +84,56 @@ def select_targets(forces1, forces2):
             best_target.targetted_by = group
             potential_targets.remove(best_target)
 
+def is_draw(forces1, forces2):
+    for group1 in forces1:
+        for group2 in forces2:
+            if group1.damage_type not in group2.immunities:
+                return False
+    return True
+
 with open('./input.txt') as f:
-    immune_system, infection = load_input(f)
-    while immune_system and infection:
-        immune_system.sort(key=lambda group: group.effective_power, reverse=True)
-        infection.sort(key=lambda group: group.effective_power, reverse=True)
+    immune_system_boost = 0
+    min_immune_system_found = False
+    min_immune_system_boost = 0
+    max_immune_system_boost = 100000000
+    original_immune_system, original_infection = load_input(f)
+    while not min_immune_system_found:
+        immune_system = deepcopy(original_immune_system)
+        infection = deepcopy(original_infection)
+        for group in immune_system:
+            group.damage += immune_system_boost
+            group.effective_power = group.damage * group.units
+        while immune_system and infection:
+            immune_system.sort(key=lambda group: group.effective_power, reverse=True)
+            infection.sort(key=lambda group: group.effective_power, reverse=True)
 
-        select_targets(immune_system, infection)
-        select_targets(infection, immune_system)
+            select_targets(immune_system, infection)
+            select_targets(infection, immune_system)
 
-        all_groups = immune_system + infection
-        all_groups.sort(key=lambda group: group.initiative, reverse=True)
-        for group in all_groups:
-            if group.units > 0 and group.target:
-                group.attack()
+            all_groups = immune_system + infection
+            all_groups.sort(key=lambda group: group.initiative, reverse=True)
+            for group in all_groups:
+                if group.units > 0 and group.target:
+                    group.attack()
+            
+            immune_system = [group for group in immune_system if group.units > 0]
+            infection = [group for group in infection if group.units > 0]
+            if is_draw(immune_system, infection):
+                break
+
+        immune_system_units = sum([group.units for group in immune_system])
+        infection_units = sum([group.units for group in infection])
+        if immune_system_boost == 0:
+            print('part 1', immune_system if immune_system else infection_units )
         
-        immune_system = [group for group in immune_system if group.units > 0]
-        infection = [group for group in infection if group.units > 0]
-        print(immune_system, infection)
+        if immune_system_units and not infection_units:
+            max_immune_system_boost = immune_system_boost - 1
+            immune_system_boost = (max_immune_system_boost + min_immune_system_boost) // 2
+        else:
+            min_immune_system_boost = immune_system_boost + 1
+            immune_system_boost = (max_immune_system_boost + min_immune_system_boost) // 2
 
-    print(sum([group.units for group in immune_system]), sum([group.units for group in infection]))
+        if max_immune_system_boost <= min_immune_system_boost:
+            min_immune_system_found = True
 
-#  [Group infection 3: 1298 units with 41570 hp and 63 damage - 1298
-# , Group infection 7: 309 units with 44733 hp and 258 damage - 273
-# , Group infection 1: 1203 units with 57281 hp and 58 damage - 1215
-# , Group infection 4: 2106 units with 40187 hp and 33 damage - 2134
-# , Group infection 10: 1955 units with 36170 hp and 24 damage - 1950
-# , Group infection 6: 3412 units with 24220 hp and 11 damage - 3408
-# , Group infection 5: 22 units with 55432 hp and 1687 damage - 22
-# , Group infection 2: 238 units with 13627 hp and 108 damage - 238
-# ]
+    print(immune_system_units)
